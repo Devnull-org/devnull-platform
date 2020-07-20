@@ -1,7 +1,20 @@
-# Fakie - The ultimate API glue!
+# DEVNULL Org
+
+DEVNULL Org is a company specialized in computer programming.
+We use Haskell programming language and offer consulting services that include:
+
+ - writing production level code
+ - code optimization
+ - debugging and fixing problems with execution speed and/or large memory consumption
+ 
+ Additionally we work on tools that should solve some of the pain points various companies experience in their daily operations.
+ 
+## Products
+
+### Fakie - The ultimate API glue!
 ------------
 
-## Merge multiple API endpoints into results you control
+#### Merge multiple API endpoints into results you control
 
 How does it work you might ask. 
 Well, it all starts with a configuration file. All you need to know in order to control the fakie api server is some JSON.
