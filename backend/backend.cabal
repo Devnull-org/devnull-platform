@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: dd955275166501154d1daa5d5063d7caada178b5d692ae8ed86128139f7b5570
+-- hash: 485ad74d6a8389a9a3bd0035f1952d0e024ba1a30ad6b0946c06b70e59bcd2be
 
 name:           backend
 version:        0.1.0.0
@@ -36,6 +36,7 @@ library
     , base >=4.7 && <5
     , servant-server
     , wai
+    , wai-cors
     , warp
   default-language: Haskell2010
 
@@ -52,6 +53,7 @@ executable backend-exe
     , base
     , servant-server
     , wai
+    , wai-cors
     , warp
   default-language: Haskell2010
 
@@ -72,5 +74,6 @@ test-suite backend-test
     , hspec-wai-json
     , servant-server
     , wai
+    , wai-cors
     , warp
   default-language: Haskell2010
