@@ -1,15 +1,24 @@
-{-
-Welcome to a Spago project!
-You can edit this file as you like.
--}
 { name = "devnull"
 , dependencies =
-   [ "console"
-   , "effect"
-   , "psci-support"
-   , "halogen"
-   , "affjax"
-   ]
+  [ "aff"
+  , "aff-bus"
+  , "aff-promise"
+  , "affjax"
+  , "argonaut"
+  , "console"
+  , "debug"
+  , "dotenv"
+  , "effect"
+  , "halogen"
+  , "pathy"
+  , "precise-datetime"
+  , "psci-support"
+  , "refs"
+  , "routing-duplex"
+  , "slug"
+  , "strings"
+  , "tolerant-argonaut"
+  ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 }

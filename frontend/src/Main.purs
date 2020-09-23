@@ -1,26 +1,30 @@
 module Main where
 
-import           Prelude
-
-import           Affjax                as AX
-import           Affjax.ResponseFormat as ResponseFormat
-import           Data.Argonaut.Core    as J
-import           Data.Either           (Either (..))
-import           Data.HTTP.Method      (Method (..))
-import           Effect                (Effect)
-import           Effect.Aff            (launchAff)
-import           Effect.Class.Console  (log)
+import Components.Home (homeComponent)
+import Effect (Effect)
+import Effect.Aff.Bus as Bus
+import Effect.Ref as Ref
+import Env (LogLevel (..))
+import Halogen (liftEffect)
+import Data.Maybe (Maybe(..))
+import Halogen.Aff as HA
+import Halogen.VDom.Driver (runUI)
+import Prelude
+import Request (BaseURL (..))
 
 main :: Effect Unit
-main = void $ launchAff $ do
-  result <-
-    AX.request
-      (AX.defaultRequest
-         { url = "http://localhost:9009/users"
-         , method = Left GET
-         , responseFormat = ResponseFormat.json
-         }
-      )
-  case result of
-    Left err -> log $ "GET /users response failed to decode: " <> AX.printError err
-    Right response -> log $ "GET /users response: " <> J.stringify response.body
+main = HA.runHalogenAff do
+  body <- HA.awaitBody
+  let
+    baseUrl = BaseURL "https://localhost:1234"
+    logLevel = Dev
+
+  -- Next, we'll maintain a global mutable reference which contains the profile for the currently
+  -- authenticated user (if there is one). To start, we'll fill the mutable reference with `Nothing`
+  -- since we don't yet have the user's profile.
+  currentUser <- liftEffect $ Ref.new Nothing
+
+  -- We'll also create a new bus to broadcast updates when the value of the current user changes;
+  -- that allows all subscribed components to stay in sync about this value.
+  userBus <- liftEffect Bus.make
+  runUI homeComponent unit body

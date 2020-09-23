@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB,oEAA6D;AACjE;;AAEA;IACI,0BAA0B;AAC9B","file":"frontend.9ad09f98.css","sourceRoot":"..","sourcesContent":["body, html {\n    min-height : 100 %;\n    background : url(\"static/images/pattern-lite.jpg\") 0 0 repeat;\n}\n\n.main-title {\n    font-size: 100px!important;\n}\n"]}
