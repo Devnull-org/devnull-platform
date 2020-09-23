@@ -2,30 +2,26 @@ module Components.Home
   ( homeComponent
   ) where
 
-import Control.Promise (fromAff)
-import           Data.Maybe (fromMaybe)
-import           Data.String.NonEmpty (unsafeFromString)
-import           Dotenv (loadFile) as Dotenv
-import           Effect.Class (liftEffect)
-import           Halogen as H
-import           Halogen.HTML as HH
-import           Halogen.HTML.Properties as HP
-import           Partial.Unsafe (unsafePartial)
-import           Pathy.Name (Name (..))
-import           Pathy.Path (rootDir, (</>), dir', file')
-import           Pathy.Printer (printPath, posixPrinter)
-import           Pathy.Sandboxed (sandbox)
-import           Prelude
-import Affjax as AX
-import Affjax.ResponseFormat as AXR
+import Data.Maybe (fromMaybe)
+import Data.String.NonEmpty (unsafeFromString)
+import Halogen as H
+import Halogen.HTML as HH
+import Halogen.HTML.Properties as HP
+import Partial.Unsafe (unsafePartial)
+import Pathy.Name (Name(..))
+import Pathy.Path (rootDir, (</>), dir', file')
+import Pathy.Printer (printPath, posixPrinter)
+import Pathy.Sandboxed (sandbox)
+import Prelude
 
-type State = { enabled :: Boolean }
+type State =
+    { loading :: Boolean
+    , content :: String
+    }
 
-data Action = Toggle
-data Query a
-       = SendGet a
-       | SendPost a
-       | UpdatedPostInfo String a
+data Action
+       = DownloadingContent
+       | ReceivedContent String
 
 data Message = ReceivedData String
 
@@ -38,7 +34,10 @@ homeComponent =
     }
 
 initialState :: forall i. i -> State
-initialState _ = { enabled: false }
+initialState _ =
+  { loading : false
+  , content : ""
+  }
 
 ui :: forall a b. State -> HH.HTML a b
 ui _state = do
@@ -89,5 +88,10 @@ ui _state = do
 handleAction ∷ forall o m. Action → H.HalogenM State Action () o m Unit
 handleAction action =
   case action of
-    Toggle ->
-      H.modify_ \st -> st { enabled = not st.enabled }
+    DownloadingContent ->
+      H.modify_ \st -> st { loading = true, content = ""}
+    ReceivedContent receivedContent ->
+      H.modify_ \st ->
+        st { loading = false
+           , content = receivedContent
+           }

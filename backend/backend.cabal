@@ -27,6 +27,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Tables
   other-modules:
       Paths_backend
   hs-source-dirs:
@@ -38,6 +39,13 @@ library
     , wai
     , wai-cors
     , warp
+    , opaleye
+    , product-profunctors
+    , text
+    , bytestring
+    , containers
+    , postgresql-simple
+    , mtl
   default-language: Haskell2010
 
 executable backend-exe
@@ -55,6 +63,8 @@ executable backend-exe
     , wai
     , wai-cors
     , warp
+    , opaleye
+    , product-profunctors
   default-language: Haskell2010
 
 test-suite backend-test

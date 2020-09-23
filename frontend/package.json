@@ -8,11 +8,14 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel ./index.html"
+    "dev": "http-server"
   },
   "author": "Sasha Bogicevic",
   "license": "ISC",
   "devDependencies": {
     "parcel": "^1.12.4"
+  },
+  "dependencies": {
+    "http-server": "^0.12.3"
   }
 }

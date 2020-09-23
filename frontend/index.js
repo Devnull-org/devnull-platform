@@ -3305,7 +3305,8 @@ var PS = {};
   };
   var initialState = function (v) {
       return {
-          enabled: false
+          loading: false,
+          content: ""
       };
   };
   var homeComponent = Halogen_Component.mkComponent({

@@ -6,25 +6,25 @@ module Lib
     , app
     ) where
 
-import           Data.Aeson
-import           Data.Aeson.TH
 import           Network.Wai
 import           Network.Wai.Handler.Warp
 import           Network.Wai.Middleware.Cors (simpleCors)
 import           Servant
+import           Control.Monad.IO.Class (liftIO)
+import           Control.Monad.Reader (runReaderT)
+import           Tables
 
-data User = User
-  { userId        :: Int
-  , userFirstName :: String
-  , userLastName  :: String
-  } deriving (Eq, Show)
+data Env =
+  Env
+    { envConnectionString :: String
+    } deriving Show
 
-$(deriveJSON defaultOptions ''User)
-
-type API = "users" :> Get '[JSON] [User]
+type API = "users" :> Get '[JSON] [UserResponse]
 
 startApp :: IO ()
-startApp = run 9009 app
+startApp = do
+  let env = Env "connection-string"
+  runReaderT (liftIO $ run 9009 app) env
 
 app :: Application
 app = simpleCors $ serve api server
@@ -35,7 +35,5 @@ api = Proxy
 server :: Server API
 server = return users
 
-users :: [User]
-users = [ User 1 "Isaac" "Newton"
-        , User 2 "Albert" "Einstein"
-        ]
+users :: [UserResponse]
+users = undefined

@@ -2,3 +2,5 @@
 .stack-work
 *.log
 tmp/
+dist-newstyle/*
+dist/*
