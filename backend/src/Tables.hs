@@ -1,6 +1,7 @@
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RecordWildCards       #-}
 {-# LANGUAGE TemplateHaskell       #-}
 
 module Tables where
@@ -16,15 +17,17 @@ import           Data.Text
 import           Database.PostgreSQL.Simple      (Connection)
 import           Opaleye
 import           Prelude
+import           Types
 
-data User' a b c d e =
+data User' a b c d e f =
   User
     { userName      :: a
     , userEmail     :: b
     , userFirstName :: c
     , userLastName  :: d
-    , userRole      :: e
-    }
+    , userPassword  :: e
+    , userRole      :: f
+    } deriving Show
 
 data UserResponse =
   UserResponse
@@ -37,8 +40,8 @@ data UserResponse =
 
 $(deriveJSON defaultOptions ''UserResponse)
 
-type User = User' Text Text Text Text Text
-type UserField = User' (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText)
+type User = User' Text Text Text Text Text Text
+type UserField = User' (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText)
 
 $(makeAdaptorAndInstance "pUser" ''User')
 
@@ -47,10 +50,11 @@ userTable =
   table "user"
    (pUser
       User
-        { userName = tableField "name"
+        { userName = tableField "username"
         , userEmail = tableField "email"
-        , userFirstName = tableField "first_name"
-        , userLastName = tableField "last_name"
+        , userFirstName = tableField "firstname"
+        , userLastName = tableField "lastname"
+        , userPassword = tableField "password"
         , userRole = tableField "role"
         }
    )
@@ -59,12 +63,22 @@ userSelect :: Select UserField
 userSelect = selectTable userTable
 
 getAllUsers
-  :: (MonadIO m, MonadReader Connection m)
+  :: (MonadIO m, MonadReader Env m)
   => Select UserField
   -> m [User]
 getAllUsers s = do
-  conn <- ask
-  liftIO $ runSelect conn s
+  Env {..} <- ask
+  liftIO $ runSelect envConnectionString s
+
+mkUserResponse :: User -> UserResponse
+mkUserResponse User {..} =
+  UserResponse
+    { userResponseUserName      = userName
+    , userResponseUserEmail     = userEmail
+    , userResponseUserFirstName = userFirstName
+    , userResponseUserLastName  = userLastName
+    , userResponseUserRole      = userRole
+    }
 
 printSql :: Default Unpackspec a a => Select a -> IO ()
 printSql = putStrLn . maybe "Empty select" id . showSql

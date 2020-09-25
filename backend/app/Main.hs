@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import Backend
 
 main :: IO ()
 main = startApp
