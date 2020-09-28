@@ -13,6 +13,7 @@ import           Control.Monad.IO.Class      (liftIO)
 import           Control.Monad.IO.Class
 import           Control.Monad.Reader        (MonadReader, ask, runReaderT)
 import           Control.Monad.Reader        (ReaderT)
+import           Data.Text                   (Text)
 import           Database.PostgreSQL.Simple  (Connection, connectPostgreSQL)
 import           Database.User               (UserResponse (..), getAllUsers,
                                               mkUserResponse, userSelect)
@@ -22,7 +23,7 @@ import           Network.Wai.Middleware.Cors (simpleCors)
 import           Servant
 import           Types                       (AppM, Env (..))
 
-type API = "home" :> Get '[JSON] [UserResponse]
+type API = "home" :> Get '[JSON] Text -- [UserResponse]
 
 startApp :: IO ()
 startApp = do
@@ -44,8 +45,20 @@ api = Proxy
 server :: ServerT API AppM
 server = homeHandler
 
-homeHandler :: AppM [UserResponse]
+homeHandler :: AppM Text
 homeHandler = do
-  users <- getAllUsers userSelect
-  liftIO $ print users
-  return $ mkUserResponse <$> users
+  return mainText
+
+-- homeHandler :: AppM [UserResponse]
+-- homeHandler = do
+--   users <- getAllUsers userSelect
+--   liftIO $ print users
+--   return $ mkUserResponse <$> users
+
+mainText :: Text
+mainText =
+  "Devnull org is a software consultancy company specialized in \
+   \ working with Haskell programming language. \
+   \ We work with Haskell because it provides us with a way of building \
+   \ composable code quickly and with high degree of certainty of correctness. \
+   \ "

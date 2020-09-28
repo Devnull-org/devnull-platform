@@ -2,17 +2,23 @@ module Components.Home
   ( homeComponent
   ) where
 
-import Data.Maybe (fromMaybe)
+import Prelude
+
+import Affjax as AX
+import Affjax.ResponseFormat as AXRF
+import Data.Either (hush)
+import Data.Maybe (fromMaybe, Maybe (..))
 import Data.String.NonEmpty (unsafeFromString)
+import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
+import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Partial.Unsafe (unsafePartial)
 import Pathy.Name (Name(..))
 import Pathy.Path (rootDir, (</>), dir', file')
 import Pathy.Printer (printPath, posixPrinter)
 import Pathy.Sandboxed (sandbox)
-import Prelude
 
 type State =
     { loading :: Boolean
@@ -25,22 +31,22 @@ data Action
 
 data Message = ReceivedData String
 
-homeComponent :: forall q i o m. H.Component HH.HTML q i o m
+homeComponent :: forall q i o m. MonadAff m => H.Component HH.HTML q i o m
 homeComponent =
   H.mkComponent
     { initialState: initialState
     , render: ui
-    , eval: H.mkEval H.defaultEval
+    , eval: H.mkEval H.defaultEval { handleAction = handleAction }
     }
 
 initialState :: forall i. i -> State
 initialState _ =
-  { loading : false
-  , content : ""
+  { loading : true
+  , content : "loading..."
   }
 
-ui :: forall a b. State -> HH.HTML a b
-ui _state = do
+ui :: forall m. State -> H.ComponentHTML Action () m
+ui st = do
   let imageDir =
         rootDir </>
         (dir' $ Name (unsafePartial $ unsafeFromString "static")) </>
@@ -59,12 +65,10 @@ ui _state = do
           [ HH.h1_
               [HH.text "Devnull org"]
           , HH.p
-              [ HP.class_ (H.ClassName "row bg-white p-4 border")]
-              [ HH.text "Devnull org is a software consultancy company specialized in \
-                       \ working with Haskell programming language. \
-                       \ We work with Haskell because it provides us with a way of building \
-                       \ composable code quickly and with high degree of certainty of correctness. \
-                       \ "
+              [ HP.class_ (H.ClassName "row bg-white p-4 border")
+              , HE.onClick \_ -> Just DownloadingContent
+              ]
+              [ HH.text st.content
               ]
           , HH.p_ [ HH.text "Services we provide:"]
            , HH.ul [HP.class_ (H.ClassName "list-group")]
@@ -85,11 +89,12 @@ ui _state = do
           ]
     ]
 
-handleAction ∷ forall o m. Action → H.HalogenM State Action () o m Unit
+handleAction ∷ forall o m. MonadAff m => Action → H.HalogenM State Action () o m Unit
 handleAction action =
   case action of
-    DownloadingContent ->
-      H.modify_ \st -> st { loading = true, content = ""}
+    DownloadingContent -> do
+      response <- H.liftAff $ AX.get AXRF.string ("http://localhost:9009/home")
+      H.modify_ (\st -> st { loading = false, content = fromMaybe "" (map _.body (hush response)) })
     ReceivedContent receivedContent ->
       H.modify_ \st ->
         st { loading = false

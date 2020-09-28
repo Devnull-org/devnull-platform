@@ -6,6 +6,7 @@ var Data_Maybe = require("../Data.Maybe/index.js");
 var Data_Unit = require("../Data.Unit/index.js");
 var Effect_Aff = require("../Effect.Aff/index.js");
 var Effect_Aff_Bus = require("../Effect.Aff.Bus/index.js");
+var Effect_Aff_Class = require("../Effect.Aff.Class/index.js");
 var Effect_Class = require("../Effect.Class/index.js");
 var Effect_Ref = require("../Effect.Ref/index.js");
 var Halogen_Aff_Util = require("../Halogen.Aff.Util/index.js");
@@ -13,7 +14,7 @@ var Halogen_VDom_Driver = require("../Halogen.VDom.Driver/index.js");
 var main = Halogen_Aff_Util.runHalogenAff(Control_Bind.bind(Effect_Aff.bindAff)(Halogen_Aff_Util.awaitBody)(function (body) {
     return Control_Bind.bind(Effect_Aff.bindAff)(Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(Effect_Ref["new"](Data_Maybe.Nothing.value)))(function (currentUser) {
         return Control_Bind.bind(Effect_Aff.bindAff)(Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(Effect_Aff_Bus.make(Effect_Class.monadEffectEffect)))(function (userBus) {
-            return Halogen_VDom_Driver.runUI(Components_Home.homeComponent)(Data_Unit.unit)(body);
+            return Halogen_VDom_Driver.runUI(Components_Home.homeComponent(Effect_Aff_Class.monadAffAff))(Data_Unit.unit)(body);
         });
     });
 }));

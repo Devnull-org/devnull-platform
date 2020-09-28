@@ -10,6 +10,7 @@
   , "dotenv"
   , "effect"
   , "halogen"
+  , "halogen-formless"
   , "pathy"
   , "precise-datetime"
   , "psci-support"
