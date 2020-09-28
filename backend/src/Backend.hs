@@ -14,12 +14,12 @@ import           Control.Monad.IO.Class
 import           Control.Monad.Reader        (MonadReader, ask, runReaderT)
 import           Control.Monad.Reader        (ReaderT)
 import           Database.PostgreSQL.Simple  (Connection, connectPostgreSQL)
+import           Database.User               (UserResponse (..), getAllUsers,
+                                              mkUserResponse, userSelect)
 import           Network.Wai
 import           Network.Wai.Handler.Warp
 import           Network.Wai.Middleware.Cors (simpleCors)
 import           Servant
-import           Tables                      (UserResponse (..), getAllUsers,
-                                              mkUserResponse, userSelect)
 import           Types                       (AppM, Env (..))
 
 type API = "home" :> Get '[JSON] [UserResponse]

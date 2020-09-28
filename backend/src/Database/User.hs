@@ -4,7 +4,7 @@
 {-# LANGUAGE RecordWildCards       #-}
 {-# LANGUAGE TemplateHaskell       #-}
 
-module Tables where
+module Database.User where
 
 import           Control.Monad.IO.Class          (MonadIO, liftIO)
 import           Control.Monad.Reader            (MonadReader, ask)
@@ -18,6 +18,7 @@ import           Database.PostgreSQL.Simple      (Connection)
 import           Opaleye
 import           Prelude
 import           Types
+import           Database.Role (UserRole (..), PGRole (..))
 
 data User' a b c d e f =
   User
@@ -35,13 +36,13 @@ data UserResponse =
     , userResponseUserEmail     :: Text
     , userResponseUserFirstName :: Text
     , userResponseUserLastName  :: Text
-    , userResponseUserRole      :: Text
+    , userResponseUserRole      :: UserRole
     } deriving (Eq, Show)
 
 $(deriveJSON defaultOptions ''UserResponse)
 
-type User = User' Text Text Text Text Text Text
-type UserField = User' (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText)
+type User = User' Text Text Text Text Text UserRole
+type UserField = User' (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field PGRole)
 
 $(makeAdaptorAndInstance "pUser" ''User')
 

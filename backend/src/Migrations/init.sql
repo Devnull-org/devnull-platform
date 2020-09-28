@@ -1,3 +1,5 @@
+CREATE TYPE userRole AS ENUM ('Admin', 'Developer', 'User');
+
 CREATE TABLE "user" (
   id SERIAL PRIMARY KEY,
   username VARCHAR ( 50 ) NOT NULL,
@@ -5,5 +7,5 @@ CREATE TABLE "user" (
   firstname VARCHAR ( 50 ),
   lastname VARCHAR ( 50 ),
   password VARCHAR ( 50 ) NOT NULL,
-  "role" VARCHAR ( 50 )
+  "role" userRole NOT NULL
 );
