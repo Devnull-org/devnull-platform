@@ -26,7 +26,7 @@ type State =
     }
 
 data Action
-       = DownloadingContent
+       = DownloadContent
        | ReceivedContent String
 
 data Message = ReceivedData String
@@ -36,7 +36,12 @@ homeComponent =
   H.mkComponent
     { initialState: initialState
     , render: ui
-    , eval: H.mkEval H.defaultEval { handleAction = handleAction }
+    , eval:
+        H.mkEval
+          H.defaultEval
+            { handleAction = handleAction
+            , initialize = Just DownloadContent
+            }
     }
 
 initialState :: forall i. i -> State
@@ -65,11 +70,8 @@ ui st = do
           [ HH.h1_
               [HH.text "Devnull org"]
           , HH.p
-              [ HP.class_ (H.ClassName "row bg-white p-4 border")
-              , HE.onClick \_ -> Just DownloadingContent
-              ]
-              [ HH.text st.content
-              ]
+              [ HP.class_ (H.ClassName "row bg-white p-4 border")]
+              [ HH.text st.content]
           , HH.p_ [ HH.text "Services we provide:"]
            , HH.ul [HP.class_ (H.ClassName "list-group")]
                [ HH.li [HP.class_ (H.ClassName "list-group-item")]
@@ -92,7 +94,7 @@ ui st = do
 handleAction ∷ forall o m. MonadAff m => Action → H.HalogenM State Action () o m Unit
 handleAction action =
   case action of
-    DownloadingContent -> do
+    DownloadContent -> do
       response <- H.liftAff $ AX.get AXRF.string ("http://localhost:9009/home")
       H.modify_ (\st -> st { loading = false, content = fromMaybe "" (map _.body (hush response)) })
     ReceivedContent receivedContent ->
