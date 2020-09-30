@@ -11417,22 +11417,24 @@ var PS = {};
   var element = Halogen_HTML_Core.element(Data_Maybe.Nothing.value);
   var h1 = element("h1");
   var h1_ = h1([  ]);
+  var h4 = element("h4");
+  var h4_ = h4([  ]);
   var img = function (props) {
       return element("img")(props)([  ]);
   };                         
-  var li = element("li");    
+  var li = element("li");
+  var li_ = li([  ]);        
   var p = element("p");
-  var p_ = p([  ]);
   var ul = element("ul");
   var div = element("div");
   var div_ = div([  ]);
   exports["div"] = div;
   exports["div_"] = div_;
   exports["h1_"] = h1_;
+  exports["h4_"] = h4_;
   exports["img"] = img;
-  exports["li"] = li;
+  exports["li_"] = li_;
   exports["p"] = p;
-  exports["p_"] = p_;
   exports["ul"] = ul;
 })(PS);
 (function($PS) {
@@ -12178,7 +12180,7 @@ var PS = {};
       var imageDir = Pathy_Path.appendPath(Pathy_Phantom.absIsRelOrAbs)(Pathy_Path.appendPath(Pathy_Phantom.absIsRelOrAbs)(Pathy_Path.rootDir)(Pathy_Path["dir'"](Data_String_NonEmpty_Internal.unsafeFromString()("static"))))(Pathy_Path["dir'"](Data_String_NonEmpty_Internal.unsafeFromString()("images")));
       var sandboxedPath = Pathy_Sandboxed.sandbox(Pathy_Phantom.relIsRelOrAbs)(imageDir)(imageFile);
       var stringPath = Data_Maybe.fromMaybe("path-not-found")(Data_Functor.map(Data_Maybe.functorMaybe)(Pathy_Printer.printPath(Pathy_Phantom.relIsRelOrAbs)(Pathy_Phantom.isDirOrFileFile)(Pathy_Printer.posixPrinter))(sandboxedPath));
-      return Halogen_HTML_Elements.div([ Halogen_HTML_Properties.class_("container") ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.class_("jumbothron text-center") ])([ Halogen_HTML_Elements.img([ Halogen_HTML_Properties.src(stringPath) ]) ]), Halogen_HTML_Elements.div([ Halogen_HTML_Properties.class_("container bg-white p-5") ])([ Halogen_HTML_Elements.h1_([ Halogen_HTML_Core.text(st.title) ]), Halogen_HTML_Elements.p([ Halogen_HTML_Properties.class_("row bg-white p-4 border") ])([ Halogen_HTML_Core.text(st.mainText) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Core.text("Services we provide:") ]), Halogen_HTML_Elements.ul([ Halogen_HTML_Properties.class_("list-group") ])([ Halogen_HTML_Elements.li([ Halogen_HTML_Properties.class_("list-group-item") ])([ Halogen_HTML_Core.text("writing production level code") ]), Halogen_HTML_Elements.li([ Halogen_HTML_Properties.class_("list-group-item") ])([ Halogen_HTML_Core.text("code optimization") ]), Halogen_HTML_Elements.li([ Halogen_HTML_Properties.class_("list-group-item") ])([ Halogen_HTML_Core.text("debugging and fixing problems with execution speed and/or large memory consumption") ]) ]), Halogen_HTML_Elements.p([ Halogen_HTML_Properties.class_("bg-white p-4") ])([ Halogen_HTML_Core.text(st.additionalText) ]) ]) ]);
+      return Halogen_HTML_Elements.div([ Halogen_HTML_Properties.class_("container") ])([ Halogen_HTML_Elements.div([ Halogen_HTML_Properties.class_("jumbothron text-center") ])([ Halogen_HTML_Elements.img([ Halogen_HTML_Properties.src(stringPath) ]) ]), Halogen_HTML_Elements.div([ Halogen_HTML_Properties.class_("container bg-white p-5") ])([ Halogen_HTML_Elements.h1_([ Halogen_HTML_Core.text(st.title) ]), Halogen_HTML_Elements.p([ Halogen_HTML_Properties.class_("row bg-white p-4") ])([ Halogen_HTML_Core.text(st.mainText) ]), Halogen_HTML_Elements.h4_([ Halogen_HTML_Core.text("Services we provide:") ]), Halogen_HTML_Elements.ul([ Halogen_HTML_Properties.class_("list-unstyled") ])([ Halogen_HTML_Elements.li_([ Halogen_HTML_Core.text("writing production level code") ]), Halogen_HTML_Elements.li_([ Halogen_HTML_Core.text("code optimization") ]), Halogen_HTML_Elements.li_([ Halogen_HTML_Core.text("debugging and fixing problems with execution speed and/or large memory consumption") ]) ]), Halogen_HTML_Elements.p([ Halogen_HTML_Properties.class_("bg-white p-4") ])([ Halogen_HTML_Core.text(st.additionalText) ]) ]) ]);
   };
   var initialState = function (v) {
       return {

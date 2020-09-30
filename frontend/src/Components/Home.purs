@@ -80,15 +80,15 @@ ui st = do
           [ HH.h1_
               [HH.text st.title]
           , HH.p
-              [ HP.class_ (H.ClassName "row bg-white p-4 border")]
+              [ HP.class_ (H.ClassName "row bg-white p-4")]
               [ HH.text st.mainText]
-          , HH.p_ [ HH.text "Services we provide:"]
-           , HH.ul [HP.class_ (H.ClassName "list-group")]
-               [ HH.li [HP.class_ (H.ClassName "list-group-item")]
+          , HH.h4_ [ HH.text "Services we provide:"]
+           , HH.ul [HP.class_ (H.ClassName "list-unstyled")]
+               [ HH.li_
                    [HH.text "writing production level code"]
-               , HH.li [HP.class_ (H.ClassName "list-group-item")]
+               , HH.li_
                    [HH.text "code optimization"]
-               , HH.li [HP.class_ (H.ClassName "list-group-item")]
+               , HH.li_
                    [HH.text "debugging and fixing problems with execution speed and/or large memory consumption"]
                ]
            , HH.p
