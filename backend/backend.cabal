@@ -26,10 +26,11 @@ source-repository head
 
 library
   exposed-modules:
+      Types
       Backend
       Database.User
       Database.Role
-      Types
+      Handler.Home
   other-modules:
       Paths_backend
   hs-source-dirs:

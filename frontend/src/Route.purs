@@ -30,14 +30,14 @@ import Slug as Slug
 -- | to send users to non-existent routes.
 data Route
   = Home
-  | Login
-  | Register
-  | Settings
-  | Editor
-  | EditArticle Slug
-  | ViewArticle Slug
-  | Profile Username
-  | Favorites Username
+  -- | Login
+  -- | Register
+  -- | Settings
+  -- | Editor
+  -- | EditArticle Slug
+  -- | ViewArticle Slug
+  -- | Profile Username
+  -- | Favorites Username
 
 derive instance genericRoute :: Generic Route _
 derive instance eqRoute :: Eq Route
@@ -55,14 +55,14 @@ instance showRoute :: Show Route where
 routeCodec :: RouteDuplex' Route
 routeCodec = root $ sum
   { "Home": noArgs
-  , "Login": "login" / noArgs
-  , "Register": "register" / noArgs
-  , "Settings": "settings" / noArgs
-  , "Editor": "editor" / noArgs
-  , "EditArticle": "editor" / slug segment
-  , "ViewArticle": "article" / slug segment
-  , "Profile": "profile" / uname segment
-  , "Favorites": "profile" / uname segment / "favorites"
+  -- , "Login": "login" / noArgs
+  -- , "Register": "register" / noArgs
+  -- , "Settings": "settings" / noArgs
+  -- , "Editor": "editor" / noArgs
+  -- , "EditArticle": "editor" / slug segment
+  -- , "ViewArticle": "article" / slug segment
+  -- , "Profile": "profile" / uname segment
+  -- , "Favorites": "profile" / uname segment / "favorites"
   }
 
 -- | This combinator transforms a codec over `String` into one that operatos on the `Slug` type.

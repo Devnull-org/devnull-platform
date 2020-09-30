@@ -1,15 +1,15 @@
 module Components.Home
-  ( homeComponent
+  ( component
   ) where
-
-import Prelude
 
 import Affjax as AX
 import Affjax.ResponseFormat as AXRF
-import Data.Either (hush)
+import Data.Either (Either (..), hush)
 import Data.Maybe (fromMaybe, Maybe (..))
 import Data.String.NonEmpty (unsafeFromString)
+import Debug.Trace
 import Effect.Aff.Class (class MonadAff)
+import Effect.Class.Console (log)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
@@ -19,20 +19,28 @@ import Pathy.Name (Name(..))
 import Pathy.Path (rootDir, (</>), dir', file')
 import Pathy.Printer (printPath, posixPrinter)
 import Pathy.Sandboxed (sandbox)
+import Prelude
+import Simple.JSON (readJSON)
+
+type HomeResponse =
+       { homeResponseTitle          :: String
+       , homeResponseMainText       :: String
+       , homeResponseAdditionalText :: String
+       }
 
 type State =
     { loading :: Boolean
-    , content :: String
+    , title :: String
+    , mainText :: String
+    , additionalText :: String
     }
 
-data Action
-       = DownloadContent
-       | ReceivedContent String
+data Action = DownloadContent
 
 data Message = ReceivedData String
 
-homeComponent :: forall q i o m. MonadAff m => H.Component HH.HTML q i o m
-homeComponent =
+component :: forall q i o m. MonadAff m => H.Component HH.HTML q i o m
+component =
   H.mkComponent
     { initialState: initialState
     , render: ui
@@ -47,7 +55,9 @@ homeComponent =
 initialState :: forall i. i -> State
 initialState _ =
   { loading : true
-  , content : "loading..."
+  , title : "loading..."
+  , mainText : "loading..."
+  , additionalText : "loading..."
   }
 
 ui :: forall m. State -> H.ComponentHTML Action () m
@@ -68,10 +78,10 @@ ui st = do
         , HH.div
           [ HP.class_ (H.ClassName "container bg-white p-5")]
           [ HH.h1_
-              [HH.text "Devnull org"]
+              [HH.text st.title]
           , HH.p
               [ HP.class_ (H.ClassName "row bg-white p-4 border")]
-              [ HH.text st.content]
+              [ HH.text st.mainText]
           , HH.p_ [ HH.text "Services we provide:"]
            , HH.ul [HP.class_ (H.ClassName "list-group")]
                [ HH.li [HP.class_ (H.ClassName "list-group-item")]
@@ -83,10 +93,7 @@ ui st = do
                ]
            , HH.p
               [ HP.class_ (H.ClassName "bg-white p-4")]
-              [ HH.text
-                  "Additionally we work on tools that should solve some of the pain points various companies experience in their daily operations. \
-                   \ Products \
-                   \ We continuously work on set of tools that could be of interest to either working developers or companies working mainly with web tech. You can learn more on the products page."
+              [ HH.text st.additionalText
               ]
           ]
     ]
@@ -95,10 +102,20 @@ handleAction ∷ forall o m. MonadAff m => Action → H.HalogenM State Action ()
 handleAction action =
   case action of
     DownloadContent -> do
-      response <- H.liftAff $ AX.get AXRF.string ("http://localhost:9009/home")
-      H.modify_ (\st -> st { loading = false, content = fromMaybe "" (map _.body (hush response)) })
-    ReceivedContent receivedContent ->
-      H.modify_ \st ->
-        st { loading = false
-           , content = receivedContent
-           }
+      res <- H.liftAff $ AX.get AXRF.string ("http://localhost:9009/home")
+      case res of
+        Left err -> do
+          log $ "GET /home response failed to decode: " <> AX.printError err
+        Right response -> do
+          case readJSON response.body of
+            Right (r :: HomeResponse) -> do
+              H.modify_
+                (\st ->
+                  st { loading = false
+                     , title = r.homeResponseTitle
+                     , mainText = r.homeResponseMainText
+                     , additionalText = r.homeResponseAdditionalText
+                     }
+                )
+            Left e -> do
+              log $ "Can't parse JSON. " <> show e
