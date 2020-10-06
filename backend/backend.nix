@@ -1,7 +1,7 @@
 { mkDerivation, aeson, base, bytestring, containers, hspec
 , hspec-wai, hspec-wai-json, mtl, opaleye, postgresql-simple
-, product-profunctors, servant-server, stdenv, text, wai, wai-cors
-, warp
+, product-profunctors, profunctors, servant-server, stdenv, text
+, wai, wai-cors, warp
 }:
 mkDerivation {
   pname = "backend";
@@ -11,7 +11,8 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [
     aeson base bytestring containers mtl opaleye postgresql-simple
-    product-profunctors servant-server text wai wai-cors warp
+    product-profunctors profunctors servant-server text wai wai-cors
+    warp
   ];
   executableHaskellDepends = [
     aeson base opaleye product-profunctors servant-server wai wai-cors

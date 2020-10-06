@@ -1,10 +1,19 @@
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RecordWildCards       #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TemplateHaskell       #-}
 
-module Database.User where
+module Database.User
+  ( User (..)
+  , UserResponse (..)
+  , mkUserResponse
+  , userSelect
+  , developersSelect
+  , getAllUsers
+  ) where
 
 import           Control.Monad.IO.Class          (MonadIO, liftIO)
 import           Control.Monad.Reader            (MonadReader, ask)
@@ -15,10 +24,10 @@ import           Data.Profunctor.Product.Default (Default)
 import           Data.Profunctor.Product.TH      (makeAdaptorAndInstance)
 import           Data.Text
 import           Database.PostgreSQL.Simple      (Connection)
+import           Database.Role                   (UserRole (..))
 import           Opaleye
 import           Prelude
 import           Types
-import           Database.Role (UserRole (..), PGRole (..))
 
 data User' a b c d e f =
   User
@@ -42,7 +51,7 @@ data UserResponse =
 $(deriveJSON defaultOptions ''UserResponse)
 
 type User = User' Text Text Text Text Text UserRole
-type UserField = User' (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field PGRole)
+type UserField = User' (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field PGText)
 
 $(makeAdaptorAndInstance "pUser" ''User')
 
@@ -62,6 +71,12 @@ userTable =
 
 userSelect :: Select UserField
 userSelect = selectTable userTable
+
+developersSelect :: Select UserField
+developersSelect = do
+  u@User {..} <- selectTable userTable
+  viaLateral restrict $ userRole .== pgString "Developer"
+  return u
 
 getAllUsers
   :: (MonadIO m, MonadReader Env m)

@@ -31,13 +31,16 @@ library
       Database.User
       Database.Role
       Handler.Home
+      Handler.Developers
   other-modules:
       Paths_backend
   hs-source-dirs:
       src
+      Database
+      Handler
   build-depends:
       aeson
-    , base >=4.7 && <5
+    , base
     , servant-server
     , wai
     , wai-cors
