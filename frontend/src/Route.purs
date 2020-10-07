@@ -30,6 +30,7 @@ import Slug as Slug
 -- | to send users to non-existent routes.
 data Route
   = Home
+  | Developers
   -- | Login
   -- | Register
   -- | Settings
@@ -55,6 +56,7 @@ instance showRoute :: Show Route where
 routeCodec :: RouteDuplex' Route
 routeCodec = root $ sum
   { "Home": noArgs
+  , "Developers": "developers" / noArgs
   -- , "Login": "login" / noArgs
   -- , "Register": "register" / noArgs
   -- , "Settings": "settings" / noArgs

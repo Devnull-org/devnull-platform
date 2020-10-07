@@ -8,9 +8,6 @@
 
 module Database.Role
   ( UserRole (..)
-  -- , PGRole (..)
-  , selectRoles
-  , roleQuery
   ) where
 
 import           Data.Aeson
@@ -29,8 +26,6 @@ data UserRole = RoleAdmin | RoleDeveloper | RoleUser  deriving (Show, Eq, Read, 
 
 $(deriveJSON defaultOptions ''UserRole)
 
--- data PGRole = PGRole { unRole :: PGText }
-
 instance QueryRunnerColumnDefault PGText UserRole where
   queryRunnerColumnDefault = fmap (read . T.unpack) fieldQueryRunnerColumn
 
@@ -38,30 +33,5 @@ adaptRole :: Profunctor p => p Text (Field PGText) -> p UserRole (Field PGText)
 adaptRole = dimap (T.pack . show) (unsafeCoerceColumn :: Field PGText -> Field PGText)
 
 instance Default Constant UserRole (Column PGText) where
-  def = Constant def'
-    where
-      def' :: UserRole -> (Column PGText)
-      def' RoleAdmin     = pgStrictText "Admin"
-      def' RoleDeveloper = pgStrictText "Developer"
-      def' RoleUser      = pgStrictText "User"
+  def = adaptRole def
 
-data Roles' a b c = Roles
-  { rolesAdmin     :: a
-  , rolesDeveloper :: b
-  , rolesUser      :: c
-  } deriving (Generic, Show)
-
-type Roles = Roles' UserRole UserRole UserRole
-type RolesColumns = Roles' (Field PGText) (Field PGText) (Field PGText)
-
-$(makeAdaptorAndInstance "pRoleSelect" ''Roles')
-
-selectRoles :: Table RolesColumns RolesColumns
-selectRoles = Table "role" $ pRoleSelect Roles
-  { rolesAdmin = required "RoleAdmin"
-  , rolesDeveloper = required "RoleDeveloper"
-  , rolesUser = required "RoleUser"
-  }
-
-roleQuery :: Query RolesColumns
-roleQuery = queryTable selectRoles

@@ -24,6 +24,7 @@ import Components.EnvironmentGlue (WithCurrentUser)
 import Components.EnvironmentGlue as Connect
 import Components.EventSource (OpaqueSlot)
 import Components.Home as Home
+import Components.Developers as Developers
 import Control.Monad.Reader (class MonadAsk)
 import Data.Either (hush)
 import Data.Foldable (elem)
@@ -54,6 +55,7 @@ data Action
 
 type ChildSlots =
   ( home :: OpaqueSlot Unit
+  , developers :: OpaqueSlot Unit
   -- , login :: OpaqueSlot Unit
   -- , register :: OpaqueSlot Unit
   -- , settings :: OpaqueSlot Unit
@@ -100,8 +102,7 @@ component = Connect.component $ H.mkComponent
         when (route /= Just dest) do
           -- don't change routes if there is a logged-in user trying to access
           -- a route only meant to be accessible to a not-logged-in session
-          -- case (isJust currentUser && dest `elem` [ Login, Register ]) of
-          case (isJust currentUser && dest `elem` [ Home ]) of
+          case (isJust currentUser && dest `elem` [ Home, Developers ]) of
             false -> H.modify_ _ { route = Just dest }
             _ -> pure unit
         pure (Just a)
@@ -120,6 +121,8 @@ component = Connect.component $ H.mkComponent
       Just r -> case r of
         Home ->
           HH.slot (SProxy :: _ "home") unit Home.component {} absurd
+        Developers ->
+          HH.slot (SProxy :: _ "developers") unit Developers.component { redirect: true } absurd
         -- Login ->
         --   HH.slot (SProxy :: _ "login") unit Login.component { redirect: true } absurd
         -- Register ->

@@ -1,3 +1,4 @@
+{-# LANGUAGE Arrows                #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -13,8 +14,10 @@ module Database.User
   , userSelect
   , developersSelect
   , getAllUsers
+  , selectAllUsers
   ) where
 
+import           Control.Arrow                   (returnA)
 import           Control.Monad.IO.Class          (MonadIO, liftIO)
 import           Control.Monad.Reader            (MonadReader, ask)
 import           Data.Aeson
@@ -25,6 +28,7 @@ import           Data.Profunctor.Product.TH      (makeAdaptorAndInstance)
 import           Data.Text
 import           Database.PostgreSQL.Simple      (Connection)
 import           Database.Role                   (UserRole (..))
+import           Debug.Trace
 import           Opaleye
 import           Prelude
 import           Types
@@ -51,7 +55,7 @@ data UserResponse =
 $(deriveJSON defaultOptions ''UserResponse)
 
 type User = User' Text Text Text Text Text UserRole
-type UserField = User' (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field PGText)
+type UserField = User' (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText) (Field SqlText)
 
 $(makeAdaptorAndInstance "pUser" ''User')
 
@@ -74,8 +78,8 @@ userSelect = selectTable userTable
 
 developersSelect :: Select UserField
 developersSelect = do
-  u@User {..} <- selectTable userTable
-  viaLateral restrict $ userRole .== pgString "Developer"
+  u <- selectTable userTable
+  viaLateral restrict $ userRole u .== (toFields RoleDeveloper)
   return u
 
 getAllUsers
@@ -98,3 +102,6 @@ mkUserResponse User {..} =
 
 printSql :: Default Unpackspec a a => Select a -> IO ()
 printSql = putStrLn . maybe "Empty select" id . showSql
+
+selectAllUsers :: Connection -> IO [User]
+selectAllUsers conn = runSelect conn $ developersSelect

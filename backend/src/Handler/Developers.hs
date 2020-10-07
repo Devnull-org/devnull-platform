@@ -4,8 +4,8 @@ module Handler.Developers
 
 import           Data.Aeson.TH (defaultOptions, deriveJSON)
 import           Data.Text     (Text)
-import           Database.User (UserResponse, getAllUsers, mkUserResponse,
-                                developersSelect)
+import           Database.User (UserResponse, developersSelect, getAllUsers,
+                                mkUserResponse)
 import           Prelude
 import           Types         (AppM)
 

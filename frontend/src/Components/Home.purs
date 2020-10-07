@@ -37,8 +37,6 @@ type State =
 
 data Action = DownloadContent
 
-data Message = ReceivedData String
-
 component :: forall q i o m. MonadAff m => H.Component HH.HTML q i o m
 component =
   H.mkComponent
