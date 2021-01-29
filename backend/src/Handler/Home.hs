@@ -31,10 +31,14 @@ homeHandler = do
 
 mainText :: Text
 mainText =
-  "Devnull org is a software consultancy company specialized in \
-   \ working with Haskell programming language. \
-   \ We work with Haskell because it provides us with a way of building \
-   \ composable code quickly and with high degree of certainty of correctness. \
+  "Devnull org is a software development company specialized in \
+   \ building teams capable of using various tech stacks and solving crucial problems for your business. \
+
+   \ We prefer to work with Haskell programming language because it provides us with a way of building \
+   \ composable code quickly and with high degree of certainty of correctness.  \
+
+   \ If this is not possible because of various reasons our experts are capable of writing production level \
+   \ code in any of the industry standard programming languages like C++, Java, Swift or even PHP and Javascript.\
    \ "
 
 additionalText :: Text

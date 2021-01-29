@@ -11,6 +11,7 @@
   , "effect"
   , "halogen"
   , "halogen-formless"
+  , "html-parser-halogen"
   , "pathy"
   , "precise-datetime"
   , "psci-support"

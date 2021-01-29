@@ -21,6 +21,7 @@ import Pathy.Printer (printPath, posixPrinter)
 import Pathy.Sandboxed (sandbox)
 import Prelude
 import Simple.JSON (readJSON)
+import Html.Parser.Halogen as PH
 
 type HomeResponse =
        { homeResponseTitle          :: String
@@ -79,7 +80,7 @@ ui st = do
               [HH.text st.title]
           , HH.p
               [ HP.class_ (H.ClassName "row bg-white p-4")]
-              [ HH.text st.mainText]
+              [ PH.render st.mainText]
           , HH.h4_ [ HH.text "Services we provide:"]
            , HH.ul [HP.class_ (H.ClassName "list-unstyled")]
                [ HH.li_

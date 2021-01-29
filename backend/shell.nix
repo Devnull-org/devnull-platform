@@ -25,6 +25,7 @@ let
   drv = unstable.haskell.lib.overrideCabal origBuild (drv: {
     libraryToolDepends = [
       unstable.ghcid
+      unstable.hlint
       unstable.stdenv
       unstable.pkg-config
     ];

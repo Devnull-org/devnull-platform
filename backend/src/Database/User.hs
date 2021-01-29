@@ -22,6 +22,7 @@ import           Control.Monad.IO.Class          (MonadIO, liftIO)
 import           Control.Monad.Reader            (MonadReader, ask)
 import           Data.Aeson
 import           Data.Aeson.TH
+import           Data.Maybe                      (fromMaybe)
 import           Data.Profunctor.Product         (p2, p3)
 import           Data.Profunctor.Product.Default (Default)
 import           Data.Profunctor.Product.TH      (makeAdaptorAndInstance)
@@ -79,7 +80,7 @@ userSelect = selectTable userTable
 developersSelect :: Select UserField
 developersSelect = do
   u <- selectTable userTable
-  viaLateral restrict $ userRole u .== (toFields RoleDeveloper)
+  viaLateral restrict $ userRole u .== toFields RoleDeveloper
   return u
 
 getAllUsers
@@ -101,7 +102,7 @@ mkUserResponse User {..} =
     }
 
 printSql :: Default Unpackspec a a => Select a -> IO ()
-printSql = putStrLn . maybe "Empty select" id . showSql
+printSql = putStrLn . fromMaybe "Empty select" . showSql
 
 selectAllUsers :: Connection -> IO [User]
-selectAllUsers conn = runSelect conn $ developersSelect
+selectAllUsers conn = runSelect conn developersSelect
