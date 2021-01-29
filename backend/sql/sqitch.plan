@@ -1,0 +1,4 @@
+%syntax-version=1.0.0
+%project=devnull
+
+1-init-user-table-and-user-roles 2021-01-29T17:24:53Z Sasha Bogicevic <sasa.bogicevic@pm.me> # initialize user and roles tables and add some users

@@ -22,7 +22,11 @@ import           GHC.Generics
 import           Opaleye
 import           Prelude
 
-data UserRole = RoleAdmin | RoleDeveloper | RoleUser  deriving (Show, Eq, Read, Enum)
+data UserRole
+  = RoleAdmin
+  | RoleDeveloper
+  | RoleUser
+  deriving (Show, Eq, Read, Enum)
 
 $(deriveJSON defaultOptions ''UserRole)
 
